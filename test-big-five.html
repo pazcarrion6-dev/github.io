@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Test de Personalidad Big Five</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F7F5F0;
+      --card: #FFFFFF;
+      --ink: #1A1A2E;
+      --muted: #6B6B80;
+      --accent: #4A4E9A;
+      --accent-light: #E8E9F8;
+      --O: #7B61FF;
+      --C: #2DA87E;
+      --E: #E85D26;
+      --A: #D4A017;
+      --N: #3B8FD4;
+      --border: #E2E0DA;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 24px 16px 60px;
+    }
+
+    header {
+      max-width: 680px;
+      margin: 0 auto 40px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(28px, 6vw, 44px);
+      line-height: 1.15;
+      color: var(--ink);
+      margin-bottom: 16px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .progress-wrap {
+      max-width: 680px;
+      margin: 0 auto 32px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 99px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    #quiz-container {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .question-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      margin-bottom: 16px;
+      transition: box-shadow 0.2s;
+    }
+
+    .question-card:hover {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    .q-number {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .q-text {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      color: var(--ink);
+    }
+
+    .scale-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+      padding: 0 2px;
+      margin-bottom: 4px;
+    }
+
+    .options {
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+    }
+
+    .option-btn {
+      flex: 1;
+      aspect-ratio: 1;
+      max-width: 52px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .option-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-light);
+    }
+
+    .option-btn.selected {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .submit-wrap {
+      max-width: 680px;
+      margin: 32px auto 0;
+      text-align: center;
+    }
+
+    .btn-submit {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 16px 48px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-submit:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    /* RESULTS */
+    #results {
+      display: none;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .results-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .results-header h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(24px, 5vw, 36px);
+      margin-bottom: 10px;
+    }
+
+    .results-header p {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .trait-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .trait-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .trait-name-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .trait-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .trait-name {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .trait-score {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .trait-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .trait-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 1s ease;
+      width: 0%;
+    }
+
+    .trait-level {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .trait-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .restart-wrap {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .btn-restart {
+      background: transparent;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      padding: 14px 40px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .btn-restart:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .disclaimer {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 24px;
+      line-height: 1.6;
+      padding: 0 16px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Psicología Organizacional</p>
+  <h1>Test de Personalidad<br>Big Five</h1>
+  <p class="subtitle">Responde con honestidad según cómo eres realmente, no como te gustaría ser. No hay respuestas correctas ni incorrectas.</p>
+</header>
+
+<div class="progress-wrap" id="progress-wrap">
+  <div class="progress-label">
+    <span id="progress-text">Pregunta 1 de 20</span>
+    <span id="progress-pct">0%</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+</div>
+
+<div id="quiz-container"></div>
+
+<div class="submit-wrap" id="submit-wrap">
+  <button class="btn-submit" id="btn-submit" disabled onclick="showResults()">Ver mis resultados</button>
+  <p style="font-size:12px;color:var(--muted);margin-top:12px;">Responde todas las preguntas para continuar</p>
+</div>
+
+<div id="results"></div>
+
+<script>
+const questions = [
+  // Apertura (O) — preguntas 1,2,3,4
+  { id:1,  trait:'O', text:'Me resulta fácil imaginar situaciones o mundos que no existen en la realidad.', reverse:false },
+  { id:2,  trait:'O', text:'Disfruto aprender sobre temas nuevos aunque no tengan utilidad práctica inmediata.', reverse:false },
+  { id:3,  trait:'O', text:'Las conversaciones sobre arte, filosofía o ideas abstractas me aburren con facilidad.', reverse:true },
+  { id:4,  trait:'O', text:'Busco activamente experiencias nuevas y diferentes a las que ya conozco.', reverse:false },
+  // Responsabilidad (C) — 5,6,7,8
+  { id:5,  trait:'C', text:'Antes de comenzar una tarea, suelo organizarme y planificar lo que haré.', reverse:false },
+  { id:6,  trait:'C', text:'Me cuesta mantener el orden en mis espacios de trabajo o estudio.', reverse:true },
+  { id:7,  trait:'C', text:'Cumplo con los plazos y compromisos que asumo, incluso cuando es difícil.', reverse:false },
+  { id:8,  trait:'C', text:'Tiendo a postergar tareas que no me resultan atractivas o urgentes.', reverse:true },
+  // Extraversión (E) — 9,10,11,12
+  { id:9,  trait:'E', text:'En reuniones o grupos, suelo ser quien toma la iniciativa en la conversación.', reverse:false },
+  { id:10, trait:'E', text:'Prefiero pasar tiempo a solas que en eventos sociales con mucha gente.', reverse:true },
+  { id:11, trait:'E', text:'Me siento lleno/a de energía cuando estoy rodeado/a de otras personas.', reverse:false },
+  { id:12, trait:'E', text:'Las interacciones sociales intensas me agotan emocionalmente.', reverse:true },
+  // Amabilidad (A) — 13,14,15,16
+  { id:13, trait:'A', text:'Cuando alguien tiene un problema, siento genuinamente el deseo de ayudar.', reverse:false },
+  { id:14, trait:'A', text:'En situaciones de desacuerdo, priorizo mantener la armonía antes que tener razón.', reverse:false },
+  { id:15, trait:'A', text:'A veces soy duro/a o crítico/a con las personas que me rodean.', reverse:true },
+  { id:16, trait:'A', text:'Me resulta fácil confiar en las buenas intenciones de los demás.', reverse:false },
+  // Neuroticismo (N) — 17,18,19,20
+  { id:17, trait:'N', text:'Me preocupo con frecuencia por cosas que podrían salir mal.', reverse:false },
+  { id:18, trait:'N', text:'Me mantengo tranquilo/a y estable incluso en situaciones de alta presión.', reverse:true },
+  { id:19, trait:'N', text:'Mis estados de ánimo cambian con bastante facilidad a lo largo del día.', reverse:false },
+  { id:20, trait:'N', text:'Las críticas o errores me afectan emocionalmente durante mucho tiempo.', reverse:false },
+];
+
+const traits = {
+  O: { name:'Apertura', color:'var(--O)', hex:'#7B61FF' },
+  C: { name:'Responsabilidad', color:'var(--C)', hex:'#2DA87E' },
+  E: { name:'Extraversión', color:'var(--E)', hex:'#E85D26' },
+  A: { name:'Amabilidad', color:'var(--A)', hex:'#D4A017' },
+  N: { name:'Neuroticismo', color:'var(--N)', hex:'#3B8FD4' },
+};
+
+const answers = {};
+
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  questions.forEach(q => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.innerHTML = `
+      <p class="q-number">Pregunta ${q.id} · ${traits[q.trait].name}</p>
+      <p class="q-text">${q.text}</p>
+      <div class="scale-wrap">
+        <div class="scale-labels"><span>Muy en desacuerdo</span><span>Muy de acuerdo</span></div>
+        <div class="options" id="opts-${q.id}">
+          ${[1,2,3,4,5].map(v => `<button class="option-btn" onclick="select(${q.id},${v},this)">${v}</button>`).join('')}
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function select(qId, value, btn) {
+  answers[qId] = value;
+  const opts = document.querySelectorAll(`#opts-${qId} .option-btn`);
+  opts.forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = Object.keys(answers).length;
+  const total = questions.length;
+  const pct = Math.round((answered / total) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `Respondidas ${answered} de ${total}`;
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('btn-submit').disabled = answered < total;
+  if (answered === total) {
+    document.querySelector('.submit-wrap p').style.display = 'none';
+  }
+}
+
+function getLevel(pct) {
+  if (pct >= 80) return 'Muy alto';
+  if (pct >= 60) return 'Alto';
+  if (pct >= 40) return 'Moderado';
+  if (pct >= 20) return 'Bajo';
+  return 'Muy bajo';
+}
+
+const descriptions = {
+  O: {
+    high: 'Tienes una mente curiosa y creativa. Disfrutas explorar ideas nuevas, eres imaginativo/a y abierto/a a distintas perspectivas. En el trabajo, destacas en roles que requieren innovación y pensamiento original.',
+    low: 'Prefieres lo concreto y lo conocido. Eres práctico/a y consistente, y te sientes más cómodo/a en entornos estructurados con rutinas claras. Valoras la experiencia por sobre la experimentación.'
+  },
+  C: {
+    high: 'Eres organizado/a, disciplinado/a y confiable. Planificas con anticipación y cumples tus compromisos. En el ámbito laboral, eres valorado/a por tu rendimiento constante y tu sentido de la responsabilidad.',
+    low: 'Tienes un estilo más espontáneo y flexible. Puedes adaptarte rápidamente a los cambios, aunque en ocasiones te cuesta mantener el orden o cumplir con plazos bajo presión.'
+  },
+  E: {
+    high: 'Eres una persona sociable, enérgica y comunicativa. Disfrutas de la interacción con otros y te sientes estimulado/a en entornos dinámicos. Sueles tomar iniciativa en grupos y te resulta fácil relacionarte.',
+    low: 'Prefieres los entornos tranquilos y el trabajo individual o en grupos pequeños. Eres reflexivo/a y profundo/a en tus relaciones, aunque necesitas tiempo a solas para recuperar energía.'
+  },
+  A: {
+    high: 'Eres empático/a, cooperativo/a y orientado/a hacia los demás. Valoras las relaciones armoniosas y tiendes a priorizar el bienestar del grupo. En equipos de trabajo, eres un elemento cohesionador.',
+    low: 'Eres directo/a y orientado/a a los resultados. No temes el conflicto cuando lo consideras necesario y priorizas la eficiencia sobre la diplomacia. Puedes ser percibido/a como muy frontal por quienes te rodean.'
+  },
+  N: {
+    high: 'Eres sensible emocionalmente y tiendes a experimentar emociones con mayor intensidad. Puedes preocuparte por situaciones futuras y te afecta más el estrés. Es importante que cuentes con estrategias de regulación emocional.',
+    low: 'Eres emocionalmente estable y resiliente. Manejas bien la presión y no te dejas llevar fácilmente por el estrés. Los cambios o críticas no te desestabilizan con facilidad.'
+  }
+};
+
+function showResults() {
+  document.getElementById('quiz-container').style.display = 'none';
+  document.getElementById('submit-wrap').style.display = 'none';
+  document.getElementById('progress-wrap').style.display = 'none';
+
+  const scores = { O:0, C:0, E:0, A:0, N:0 };
+  const counts = { O:0, C:0, E:0, A:0, N:0 };
+
+  questions.forEach(q => {
+    let val = answers[q.id];
+    if (q.reverse) val = 6 - val;
+    scores[q.trait] += val;
+    counts[q.trait]++;
+  });
+
+  const resultsDiv = document.getElementById('results');
+  resultsDiv.style.display = 'block';
+
+  let html = `
+    <div class="results-header">
+      <p class="eyebrow">Tus resultados</p>
+      <h2>Tu perfil de personalidad</h2>
+      <p>Basado en el modelo de los Cinco Grandes rasgos (Big Five)</p>
+    </div>
+  `;
+
+  Object.keys(traits).forEach(key => {
+    const max = counts[key] * 5;
+    const pct = Math.round((scores[key] / max) * 100);
+    const level = getLevel(pct);
+    const isHigh = pct >= 50;
+    const desc = isHigh ? descriptions[key].high : descriptions[key].low;
+    const t = traits[key];
+
+    html += `
+      <div class="trait-card">
+        <div class="trait-top">
+          <div class="trait-name-wrap">
+            <div class="trait-dot" style="background:${t.hex}"></div>
+            <span class="trait-name">${t.name}</span>
+          </div>
+          <span class="trait-score" style="color:${t.hex}">${pct}%</span>
+        </div>
+        <div class="trait-bar-bg">
+          <div class="trait-bar-fill" id="bar-${key}" style="background:${t.hex}"></div>
+        </div>
+        <p class="trait-level" style="color:${t.hex}">${level}</p>
+        <p class="trait-desc">${desc}</p>
+      </div>
+    `;
+  });
+
+  html += `
+    <div class="restart-wrap">
+      <button class="btn-restart" onclick="restart()">Volver a hacer el test</button>
+    </div>
+    <p class="disclaimer">Este test tiene fines educativos y no constituye un diagnóstico clínico.<br>Para una evaluación profesional, consulta con un psicólogo/a.</p>
+  `;
+
+  resultsDiv.innerHTML = html;
+
+  setTimeout(() => {
+    Object.keys(traits).forEach(key => {
+      const max = counts[key] * 5;
+      const pct = Math.round((scores[key] / max) * 100);
+      const bar = document.getElementById('bar-' + key);
+      if (bar) bar.style.width = pct + '%';
+    });
+  }, 100);
+}
+
+function restart() {
+  Object.keys(answers).forEach(k => delete answers[k]);
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('quiz-container').style.display = 'block';
+  document.getElementById('submit-wrap').style.display = 'block';
+  document.getElementById('progress-wrap').style.display = 'block';
+  document.querySelector('.submit-wrap p').style.display = 'block';
+  buildQuiz();
+  updateProgress();
+  window.scrollTo(0, 0);
+}
+
+buildQuiz();
+updateProgress();
+</script>
+</body>
+</html>
